@@ -1,0 +1,451 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "ed86613e-246a-4058-9f9a-da583802d14e",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "76e13937-6206-44b6-9cf4-767e8ef119fd",
+              "name": "topic",
+              "value": "The Role of AI in Manufacturing: Benefits, Applications and Challenges",
+              "type": "string"
+            },
+            {
+              "id": "62409e83-76cb-4d9d-b133-80af6a2c42ca",
+              "name": "keyword",
+              "value": "AI in manufacturing",
+              "type": "string"
+            },
+            {
+              "id": "0590e1c9-98c9-45d0-afc3-f48f603a2075",
+              "name": "audience",
+              "value": "General business and technology readers",
+              "type": "string"
+            },
+            {
+              "id": "4051aaf3-656e-423a-a084-befe4f11a289",
+              "name": "word_count",
+              "value": "1200-1500 words",
+              "type": "string"
+            },
+            {
+              "id": "179cc4ac-7de8-42f6-a137-bc173e5c32db",
+              "name": "tone",
+              "value": "Professional, informative and easy to understand",
+              "type": "string"
+            },
+            {
+              "id": "f062c9c6-3e94-47be-aab7-4f9ecca9f3f7",
+              "name": "requirements",
+              "value": "SEO-friendly, clear headings, useful information, natural keyword usage, introduction and conclusion",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        224,
+        0
+      ],
+      "id": "5828c9ef-44a5-4a96-b1c8-e4d114acd9de",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an AI content research and planning assistant.\n\nAnalyze the following blog topic and requirements.\n\nTopic: {{ $json.topic }}\nTarget Keyword: {{ $json.keyword }}\nTarget Audience: {{ $json.audience }}\nWord Count: {{ $json.wordCount }}\nTone: {{ $json.tone }}\nRequirements: {{ $json.requirements }}\n\nYour task is to research and plan the content. Do NOT write the complete blog article.\n\nProvide the following:\n\n1. Search Intent\n- Identify the main search intent.\n- Explain what the reader is looking for.\n- Identify the main question the blog should answer.\n\n2. Topic Analysis\n- Explain the main topic.\n- Identify the most important subtopics that should be covered.\n- Identify useful questions readers may have.\n\n3. SEO Keyword Research\n- Identify the primary keyword.\n- Suggest relevant secondary keywords.\n- Suggest related terms and questions.\n- Keep keyword usage natural and avoid keyword stuffing.\n\n4. Content Requirements\n- Identify important information that should be included.\n- Identify useful examples or practical points.\n- Identify information that should not be included because it is irrelevant.\n\n5. Blog Structure Recommendations\n- Suggest a logical H1.\n- Suggest relevant H2 and H3 sections.\n- Recommend an appropriate introduction and conclusion.\n- Suggest FAQs where appropriate.\n\n6. Internal Linking Opportunities\n- Identify where relevant internal links could be added.\n- Suggest the type of AiLif page that could be linked naturally.\n\n7. Content Quality Considerations\n- Identify potential areas where the article could become generic, repetitive, unclear, or irrelevant.\n- Suggest how the final article can remain useful, clear, accurate, and focused.\n\nReturn the research and planning information only.\nDo not write the complete blog article.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        448,
+        0
+      ],
+      "id": "bc38c630-79de-4db4-b61e-60f9a5c1cbdb",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        320,
+        208
+      ],
+      "id": "280b6331-a252-4995-a826-8e28c3cfd8aa",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an expert blog content planner and SEO content strategist.\n\nUsing the research output from the previous AI step, create a detailed and logical blog outline.\n\nThe original topic is:\n{{ $('Edit Fields').item.json.topic }}\n\nTarget keyword:\n{{ $('Edit Fields').item.json.keyword }}\n\nTarget audience:\n{{ $('Edit Fields').item.json.audience }}\n\nRequired word count:\n{{ $('Edit Fields').item.json.wordCount }}\n\nTone:\n{{ $('Edit Fields').item.json.tone }}\n\nContent requirements:\n{{ $('Edit Fields').item.json.requirements }}\n\nResearch output:\n{{ $json.output }}\n\nCreate:\n\n1. A strong SEO-friendly blog title\n2. A concise introduction plan\n3. One clear H1\n4. Logical H2 sections\n5. H3 subsections where useful\n6. Important points that should be covered under each section\n7. Natural opportunities to use the primary and secondary keywords\n8. Internal linking opportunities for relevant AiLif pages\n9. Conclusion section\n10. FAQ section with 4-6 useful questions\n11. Meta description suggestion\n\nMake sure the outline:\n\n- Matches the main search intent\n- Clearly addresses the reader's main question\n- Covers the important research findings\n- Uses the target keyword naturally\n- Allows secondary keywords to be used naturally\n- Avoids keyword stuffing\n- Has one clear H1\n- Uses a logical H2/H3 structure\n- Is suitable for a 1200-1500 word article\n- Has a clear and useful introduction\n- Has a useful conclusion\n- Includes relevant FAQ questions where appropriate\n- Identifies suitable internal linking opportunities\n- Maintains a professional and informative tone\n- Avoids unnecessary or repetitive sections\n- Does not write the complete article\n\nReturn only the detailed blog outline.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        816,
+        0
+      ],
+      "id": "714f9507-94a4-485d-b2e3-81266574258c",
+      "name": "Blog Outline"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        688,
+        208
+      ],
+      "id": "42b2d450-ed62-4ec9-b3ff-20cf7e581e76",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an expert SEO blog writer and content strategist.\n\nUsing the research and blog outline from the previous steps, write a complete, high-quality blog article.\n\nOriginal Topic:\n{{ $('Edit Fields').item.json.topic }}\n\nPrimary Keyword:\n{{ $('Edit Fields').item.json.keyword }}\n\nTarget Audience:\n{{ $('Edit Fields').item.json.audience }}\n\nRequired Word Count:\n{{ $('Edit Fields').item.json.wordCount }}\n\nTone:\n{{ $('Edit Fields').item.json.tone }}\n\nContent Requirements:\n{{ $('Edit Fields').item.json.requirements }}\n\nBlog Outline:\n{{ $json.output }}\n\nWrite the complete blog article based on the research and outline.\n\nSEO Requirements:\n- Create one clear H1/title.\n- Use the primary keyword naturally in the title where appropriate.\n- Use the primary keyword naturally in the introduction and relevant sections.\n- Use relevant secondary keywords and related terms naturally.\n- Never use keyword stuffing.\n- Match the intended search intent.\n- Answer the reader's main question clearly.\n- Use logical H2 and H3 headings.\n- Keep headings descriptive and relevant.\n- Suggest a suitable meta description at the beginning of the article.\n- Identify natural opportunities for relevant internal links to AiLif pages.\n\nContent Quality Requirements:\n- Keep the content accurate, relevant, useful, and focused.\n- Explain concepts clearly using simple language.\n- Avoid generic filler and unnecessary repetition.\n- Include practical examples where appropriate.\n- Maintain a professional B2B tone.\n- Keep the article approximately 1200-1500 words.\n- Include a useful conclusion.\n- Include the 4-6 FAQ questions from the outline and answer them clearly.\n- Do not make unsupported technical or factual claims.\n- Do not mention that AI was used to write the article.\n- Do not add unnecessary notes or explanations outside the article.\n\nReturn only the complete blog article.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1088,
+        0
+      ],
+      "id": "b06f3d2e-901b-4f42-af5b-0565778fc895",
+      "name": "Blog Generation"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        960,
+        208
+      ],
+      "id": "4a2ba4f5-a334-49fd-88b1-d1c52e4e9e34",
+      "name": "OpenAI Chat Model2",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an expert SEO and content quality reviewer.\n\nReview the complete blog generated in the previous step.\n\nOriginal Topic:\n{{ $('Edit Fields').item.json.topic }}\n\nPrimary Keyword:\n{{ $('Edit Fields').item.json.keyword }}\n\nTarget Audience:\n{{ $('Edit Fields').item.json.audience }}\n\nRequired Word Count:\n{{ $('Edit Fields').item.json.wordCount }}\n\nBlog:\n{{ $json.output }}\n\nReview the blog using the following criteria.\n\n1. SEO REVIEW\n\nCheck:\n\n- Is the title clear, relevant, and SEO-friendly?\n- Is there one clear H1?\n- Are H2 and H3 headings logical and descriptive?\n- Is the primary keyword used naturally?\n- Are secondary keywords and related terms used naturally where appropriate?\n- Is there any keyword stuffing?\n- Does the content match the intended search intent?\n- Does the introduction address the reader's main question?\n- Is the meta description present and appropriate?\n- Suggest an improved meta description if needed.\n- Identify relevant internal linking opportunities for AiLif pages.\n\n2. CONTENT QUALITY REVIEW\n\nCheck:\n\n- Is the content accurate and relevant?\n- Does it stay focused on the original topic?\n- Does it cover the important points from the outline?\n- Is any important information missing?\n- Are there generic or unsupported claims?\n- Is there unnecessary repetition?\n- Is the introduction useful and specific?\n- Is the conclusion useful and relevant?\n- Are the FAQs useful and relevant?\n\n3. READABILITY REVIEW\n\nCheck:\n\n- Is the language clear and easy to understand?\n- Are sentences unnecessarily complicated?\n- Are paragraphs reasonably short?\n- Is the content easy to scan?\n- Are bullets or lists useful where appropriate?\n- Is the overall flow logical?\n- Is unnecessary jargon avoided?\n\n4. BRAND AND AUDIENCE RELEVANCE\n\nCheck:\n\n- Is the content appropriate for the target audience?\n- Does the tone remain professional and informative?\n- Is the content relevant to AiLif's industrial AI context?\n- Are AiLif-related claims accurate and reasonable?\n\n5. WORD COUNT\n\nCheck whether the article is approximately 1200-1500 words.\n\n6. FINAL QUALITY ASSESSMENT\n\nProvide the review in this format:\n\nSEO STATUS:\nPASS / NEEDS IMPROVEMENT\n\nCONTENT QUALITY STATUS:\nPASS / NEEDS IMPROVEMENT\n\nREADABILITY STATUS:\nPASS / NEEDS IMPROVEMENT\n\nBRAND/AUDIENCE STATUS:\nPASS / NEEDS IMPROVEMENT\n\nWORD COUNT STATUS:\nPASS / NEEDS IMPROVEMENT\n\nSEO ISSUES:\n- List specific issues found.\n\nCONTENT ISSUES:\n- List specific issues found.\n\nREADABILITY ISSUES:\n- List specific issues found.\n\nMISSING INFORMATION:\n- List missing information, if any.\n\nINTERNAL LINKING OPPORTUNITIES:\n- List relevant internal linking opportunities.\n\nIMPROVEMENT ACTIONS:\n- Provide specific, actionable changes for the next AI improvement step.\n\nDo not rewrite the complete blog.\nOnly provide a detailed review and actionable improvement suggestions.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1456,
+        0
+      ],
+      "id": "c5c1da30-072b-4752-9236-6694740dc1fb",
+      "name": "SEO & Content Review"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1328,
+        208
+      ],
+      "id": "95b0bb6e-1a32-4b37-b02c-747f6f829bbe",
+      "name": "OpenAI Chat Model3",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an expert SEO editor, content improvement specialist, and quality reviewer.\n\nImprove the original blog using the SEO and content review from the previous step.\n\nOriginal Topic:\n{{ $('Edit Fields').item.json.topic }}\n\nPrimary Keyword:\n{{ $('Edit Fields').item.json.keyword }}\n\nTarget Audience:\n{{ $('Edit Fields').item.json.audience }}\n\nRequired Word Count:\n{{ $('Edit Fields').item.json.wordCount }}\n\nOriginal Blog:\n{{ $('Blog Generation').item.json.output }}\n\nSEO & Content Review:\n{{ $json.output }}\n\nImprove the blog according to the review.\n\nSEO Improvements:\n- Fix all important SEO issues identified in the review.\n- Improve the title if necessary.\n- Keep one clear H1.\n- Improve H2/H3 structure where necessary.\n- Use the primary keyword naturally.\n- Use secondary keywords and related terms naturally where appropriate.\n- Remove keyword stuffing.\n- Ensure the article matches the intended search intent.\n- Improve the meta description if needed.\n- Preserve or add useful internal linking opportunities for relevant AiLif pages.\n\nContent Quality Improvements:\n- Fix relevant content issues identified in the review.\n- Add important missing information.\n- Remove unnecessary repetition and filler.\n- Improve generic or unclear sections.\n- Keep information accurate and relevant.\n- Improve the introduction where necessary.\n- Improve the conclusion where necessary.\n- Keep useful FAQs and improve them where necessary.\n\nReadability Improvements:\n- Make sentences clear and easy to understand.\n- Improve paragraph flow.\n- Use short paragraphs where appropriate.\n- Use bullets or lists when they improve readability.\n- Avoid unnecessary jargon.\n\nBrand and Audience:\n- Maintain a professional, informative B2B tone.\n- Keep the content relevant to the target audience.\n- Ensure AiLif-related statements remain accurate and reasonable.\n\nLength:\n- Keep the article approximately 1200-1500 words.\n\nImportant:\n- Apply the review findings instead of simply repeating them.\n- Do not introduce unsupported factual claims.\n- Do not mention that AI was used.\n- Do not include the review or explanations.\n- Return only the complete improved blog article.\nInternal Linking:\n- Use only verified AiLif website pages.\n- Do not create fictional or placeholder URLs.\n- For relevant internal links, use these verified pages:\n  - AI for General: https://ailif.digital/ai-for-general/\n  - Our Solutions: https://ailif.digital/our-solutions/\n  - Contact Us: https://ailif.digital/contact-us/\n- Remove any unverified internal resource URLs such as case-study, digital-twin, IIoT architecture, pilot-checklist, ROI calculator, or MLOps guide URLs if they are not confirmed to exist on AiLif.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1824,
+        0
+      ],
+      "id": "24630871-a48b-4f3f-a4f2-bc7eb224f893",
+      "name": "AI Improvement"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1696,
+        208
+      ],
+      "id": "bf4425f7-1715-419b-83af-63289e19cf00",
+      "name": "OpenAI Chat Model4",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a9d16627-65d1-42fd-850f-e8dbd4d61adc",
+              "name": "Final Blog",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            },
+            {
+              "id": "39b95752-639a-4f1f-bc5d-3d5203f913aa",
+              "name": "",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        2192,
+        0
+      ],
+      "id": "d0c06d62-2c34-4103-abdd-a34aec82117d",
+      "name": "Edit Fields1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Blog Outline",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Blog Outline",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Blog Outline": {
+      "main": [
+        [
+          {
+            "node": "Blog Generation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Blog Generation",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Blog Generation": {
+      "main": [
+        [
+          {
+            "node": "SEO & Content Review",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "SEO & Content Review",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SEO & Content Review": {
+      "main": [
+        [
+          {
+            "node": "AI Improvement",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Improvement",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Improvement": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "7e336240-2d55-495d-9e77-e08ff9d60cd2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9ee87399a0510d00b3846f0e63ff70ca68640871116e1ef36eff78f09efa581c"
+  },
+  "nodeGroups": [],
+  "id": "331j5AP8E7xqGSFm",
+  "tags": []
+}
